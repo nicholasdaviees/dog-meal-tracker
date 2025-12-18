@@ -59,6 +59,7 @@ const char* password = "YOUR_PASSWORD";
 const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = -8 * 3600; // PST
 const int daylightOffset_sec = 3600; // +1 hour for PDT
+bool resetDoneToday = false; // Boolean for resetting time
 
 // ----------------- Helper Functions -----------------
 
@@ -117,6 +118,17 @@ void resetTime(Button &btn) {
   btn.time = "--:--";
   btn.pressed = false;
   drawButton(btn);
+}
+
+// Helper function for resetting time at midnight
+bool isMidnight() {
+  struct tm timeinfo;
+
+  if (getLocalTime(&timeinfo)) {
+    return (timeinfo.tm_hour == 0 && timeinfo.tm_min == 0);
+  }
+
+  return false;
 }
 
 // Populate button objects with data
@@ -218,5 +230,16 @@ void loop() {
         }
       }
     }
+  }
+
+  // Reset buttons at midnight
+  if (isMidnight() && !resetDoneToday) {
+    for (auto &b : buttons) resetTime(b);
+    resetDoneToday = true;
+  }
+
+  // Set boolean to default when no longer midnight to prevent reset occurring thousands of times 
+  if (!isMidnight()) {
+    resetDoneToday = false;
   }
 }
