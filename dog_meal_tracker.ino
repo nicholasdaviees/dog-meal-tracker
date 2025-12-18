@@ -1,0 +1,186 @@
+#include <TFT_eSPI.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <time.h>
+#include <bb_captouch.h>
+
+#include "images/mollyIcon.h"
+#include "images/tobyIcon.h"
+
+// Capacitive touch pins
+#define TOUCH_SDA_PIN  33
+#define TOUCH_SCL_PIN  32
+#define TOUCH_RST_PIN  25
+#define TOUCH_INT_PIN  21
+
+// Initialize the display
+TFT_eSPI tft = TFT_eSPI();
+
+// Initialize the touch
+BBCapTouch capTouch;
+TOUCHINFO touchInfo;
+
+// Define screen layout constants
+#define SCREEN_W 320
+#define SCREEN_H 240
+
+// Buttons
+struct Button {
+  int x, y, w, h;
+  String label;
+  uint16_t color;     // For 16-bit color
+  uint16_t textColor; // For 16-bit color
+  String time;
+  bool pressed;
+};
+
+// Define arrays
+Button buttons[4];
+String dogNames[2]  = {"Molly", "Toby"};
+String mealNames[2] = {"Fed Morning", "Fed Evening"};
+
+// Define colors
+const uint16_t COL_BG         = tft.color565(255, 248, 231);  // Cream background
+const uint16_t COL_TEXT       = TFT_BROWN;                    // Title Texts
+const uint16_t COL_LINE       = TFT_BROWN;                    // Title Texts
+const uint16_t COL_MORNING_BG = tft.color565(191, 211, 217);  // Button background
+const uint16_t COL_MORNING_TX = TFT_NAVY;                     // Text background
+const uint16_t COL_EVENING_BG = tft.color565(245, 195, 143);  // Button background
+const uint16_t COL_EVENING_TX = TFT_MAROON;                   // Text background
+
+// ----------------- Helper Functions -----------------
+
+// Sets background color and draws title text
+void drawHeader() {
+  tft.fillScreen(COL_BG);
+  tft.setTextDatum(TC_DATUM); // Center text
+  tft.setTextColor(COL_TEXT, COL_BG);                     
+  tft.drawString("Dog Meal Tracker", SCREEN_W / 2, 6, 4); // (text, x, y, fontSize)
+  tft.drawLine(20, 36, SCREEN_W - 20, 36, COL_LINE); // (x0, y0, x1, y1, color)
+}
+
+// Draws dog labels
+void drawDogLabels() {
+  tft.setTextDatum(TC_DATUM);
+  tft.setTextColor(COL_TEXT, COL_BG);
+  tft.setSwapBytes(true);
+  tft.pushImage(20, 42, 48, 48, mollyIcon); // (x, y, w, h, iconName)
+  tft.pushImage((SCREEN_W / 2) + 20, 42, 48, 48, tobyIcon);
+  tft.drawString(dogNames[0], SCREEN_W / 3, 56, 4);      // (text, x, y, fontSize)
+  tft.drawString(dogNames[1], SCREEN_W * 3.35 / 4, 56, 4);  // (text, x, y, fontSize)
+}
+
+// Draws meal buttons
+void drawButton(Button &btn) {
+  tft.fillRoundRect(btn.x, btn.y, btn.w, btn.h, 8, btn.color);              
+  tft.setTextColor(btn.textColor, btn.color);                              
+  tft.setTextDatum(MC_DATUM);                                               // Center text
+  tft.drawString(btn.label, btn.x + btn.w / 2, btn.y + btn.h / 2 - 10, 2);  // Morning or evening label
+  tft.drawString(btn.time,  btn.x + btn.w / 2, btn.y + btn.h / 2 + 10, 2);  // Time fed
+}
+
+/* TODO: HHMM - FIX this to work with Wi-Fi*/
+String getCurrentTime() {
+  return String("Boo!");
+}
+
+// Updates button time to current time
+void updateTime(Button &btn) {
+  btn.time = getCurrentTime();
+  btn.pressed = true;
+  drawButton(btn);
+}
+
+// Resets button time to default value
+void resetTime(Button &btn) {
+  btn.time = "--:--";
+  btn.pressed = false;
+  drawButton(btn);
+}
+
+// Populate button objects with data
+void setupButtons() {
+  int colWidth  = SCREEN_W / 2; // Center of screen
+  int btnHeight = 52;
+  int spacing   = 12; // 12 px spacing between buttons
+  int yStart    = 96;  // Starting y coordinate for buttons
+
+  // Center line
+  tft.drawLine(colWidth, 56, colWidth, yStart + (btnHeight*2) + spacing, COL_TEXT); // (x0, y0, x1, y1, color)
+        
+  // Molly buttons: {x, y, w, h, label, background color, text color, time, pressed}
+  buttons[0] = {colWidth * 0 + 20, yStart, colWidth - 40, btnHeight, mealNames[0], COL_MORNING_BG, COL_MORNING_TX, "--:--", false};                      
+  buttons[1] = {colWidth * 0 + 20, yStart + btnHeight + spacing, colWidth - 40, btnHeight, mealNames[1], COL_EVENING_BG, COL_EVENING_TX, "--:--", false};                       
+
+  // Toby buttons: {x, y, w, h, label, background color, text color, time, pressed}
+  buttons[2] = {colWidth * 1 + 20, yStart, colWidth - 40, btnHeight, mealNames[0], COL_MORNING_BG, COL_MORNING_TX, "--:--", false};                       
+  buttons[3] = {colWidth * 1 + 20, yStart + btnHeight + spacing, colWidth - 40, btnHeight, mealNames[1], COL_EVENING_BG, COL_EVENING_TX, "--:--", false};                      
+}
+
+// Function to ensure touch press was inside a button
+bool inButton(int x, int y, const Button &button) {
+  // Left = b.x
+  // Right = b.x + b.w
+  // Top = b.y
+  // Bottom = b.y + b.h
+  return (x >= button.x && x <= button.x + button.w && y >= button.y && y <= button.y + button.h);
+}
+
+// Function to calibrate touch input
+static inline void mapCoordinates(int &x, int &y) {
+  int new_x = y; // Swap x and y because touch axes are rotated
+  int new_y = SCREEN_H - 1 - x; // Invert y axis
+
+  // Update x and y with new values
+  x = new_x; 
+  y = new_y;
+}
+
+// ----------------- Setup -----------------
+void setup() {
+  Serial.begin(115200);
+
+  // Initialize display
+  tft.init();
+  tft.setRotation(1); // Set to landscape (320x240)
+
+  // Call helper functions
+  drawHeader();
+  drawDogLabels();
+  setupButtons();
+  for (auto &b : buttons) drawButton(b); // Passes by reference so no copies
+
+  // Starts I^2C bus for communication with capacitive touch controller
+  // Set slower clock to avoid timeout
+  Wire.begin(TOUCH_SDA_PIN, TOUCH_SCL_PIN, 100000); // (serial data, serial clock, bus speed)
+
+  // Initialize capacitive touch
+  capTouch.init(TOUCH_SDA_PIN, TOUCH_SCL_PIN, TOUCH_RST_PIN, TOUCH_INT_PIN); // (serial data, serial clock, reset pin, interrupt pin)
+  capTouch.setOrientation(0, SCREEN_W, SCREEN_H); // Set to no rotation. This will be changed later
+}
+
+// ----------------- Loop -----------------
+void loop() {
+  if (capTouch.getSamples(&touchInfo)) { // Detects touch input
+    static unsigned long lastTap = 0;
+    if (millis() - lastTap > 120) { // Comparison to prevent multiple presses
+      for (int numTouch = 0; numTouch < touchInfo.count; numTouch++) { // Get x,y coordinates from each touch
+        int x = touchInfo.x[numTouch];
+        int y = touchInfo.y[numTouch];
+
+        // Line up touch controller system with display rotation
+        mapCoordinates(x, y);
+        x = constrain(x, 0, SCREEN_W - 1);
+        y = constrain(y, 0, SCREEN_H - 1);
+
+        for (int numBtn = 0; numBtn < 4; numBtn++) {
+          if (inButton(x, y, buttons[numBtn])) {
+            updateTime(buttons[numBtn]); // Set time when pressed
+            lastTap = millis();
+            break; // Exits loop to prevent from checking other buttons unnecessarily  
+          }
+        }
+      }
+    }
+  }
+}
