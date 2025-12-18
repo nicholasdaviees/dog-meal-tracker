@@ -3,15 +3,18 @@
 #include <Wire.h>
 #include <time.h>
 #include <bb_captouch.h>
+#include <WiFi.h>
+#include "time.h"
 
+// Include dog icon header files
 #include "images/mollyIcon.h"
 #include "images/tobyIcon.h"
 
 // Capacitive touch pins
-#define TOUCH_SDA_PIN  33
-#define TOUCH_SCL_PIN  32
-#define TOUCH_RST_PIN  25
-#define TOUCH_INT_PIN  21
+#define TOUCH_SDA_PIN 33
+#define TOUCH_SCL_PIN 32
+#define TOUCH_RST_PIN 25
+#define TOUCH_INT_PIN 21
 
 // Initialize the display
 TFT_eSPI tft = TFT_eSPI();
@@ -48,6 +51,15 @@ const uint16_t COL_MORNING_TX = TFT_NAVY;                     // Text background
 const uint16_t COL_EVENING_BG = tft.color565(245, 195, 143);  // Button background
 const uint16_t COL_EVENING_TX = TFT_MAROON;                   // Text background
 
+// Define WiFi information
+const char* ssid = "WIFI_NAME";
+const char* password = "YOUR_PASSWORD";
+
+// Define timezone and NTP server setup
+const char* ntpServer = "pool.ntp.org";
+const long gmtOffset_sec = -8 * 3600; // PST
+const int daylightOffset_sec = 3600; // +1 hour for PDT
+
 // ----------------- Helper Functions -----------------
 
 // Sets background color and draws title text
@@ -65,8 +77,8 @@ void drawDogLabels() {
   tft.setTextColor(COL_TEXT, COL_BG);
   tft.setSwapBytes(true);
   tft.pushImage(20, 42, 48, 48, mollyIcon); // (x, y, w, h, iconName)
-  tft.pushImage((SCREEN_W / 2) + 20, 42, 48, 48, tobyIcon);
-  tft.drawString(dogNames[0], SCREEN_W / 3, 56, 4);      // (text, x, y, fontSize)
+  tft.pushImage((SCREEN_W / 2) + 20, 42, 48, 48, tobyIcon); // (x, y, w, h, iconName)
+  tft.drawString(dogNames[0], SCREEN_W / 3, 56, 4);         // (text, x, y, fontSize)
   tft.drawString(dogNames[1], SCREEN_W * 3.35 / 4, 56, 4);  // (text, x, y, fontSize)
 }
 
@@ -81,7 +93,16 @@ void drawButton(Button &btn) {
 
 /* TODO: HHMM - FIX this to work with Wi-Fi*/
 String getCurrentTime() {
-  return String("Boo!");
+  struct tm timeinfo;
+
+  if (getLocalTime(&timeinfo)) {
+    char buffer[10];
+    strftime(buffer, sizeof(buffer), "%l:%M %p", &timeinfo);
+    String timeString = String(buffer);
+    return timeString;
+  }
+
+  return "--:--";
 }
 
 // Updates button time to current time
@@ -102,7 +123,7 @@ void resetTime(Button &btn) {
 void setupButtons() {
   int colWidth  = SCREEN_W / 2; // Center of screen
   int btnHeight = 52;
-  int spacing   = 12; // 12 px spacing between buttons
+  int spacing   = 12;  // 12 px spacing between buttons
   int yStart    = 96;  // Starting y coordinate for buttons
 
   // Center line
@@ -157,6 +178,21 @@ void setup() {
   // Initialize capacitive touch
   capTouch.init(TOUCH_SDA_PIN, TOUCH_SCL_PIN, TOUCH_RST_PIN, TOUCH_INT_PIN); // (serial data, serial clock, reset pin, interrupt pin)
   capTouch.setOrientation(0, SCREEN_W, SCREEN_H); // Set to no rotation. This will be changed later
+
+  // Connect to WiFi
+  WiFi.begin(ssid, password);
+  Serial.println("\nConnecting");
+
+  while(WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(500);
+  }
+
+  Serial.print("\nConnected: ");
+  Serial.println(WiFi.localIP());
+
+  // Config time
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 }
 
 // ----------------- Loop -----------------
