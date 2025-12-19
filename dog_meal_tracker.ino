@@ -57,8 +57,8 @@ const uint16_t COL_EVENING_BG = tft.color565(245, 195, 143);  // Button backgrou
 const uint16_t COL_EVENING_TX = TFT_MAROON;                   // Text background
 
 // Define WiFi information
-const char* SSID = "WIFI_NAME";
-const char* PASSWORD = "YOUR_PASSWORD";
+const char* SSID = "56K";
+const char* PASSWORD = "#xtr3m31y%3cur3";
 
 // Define timezone and NTP server setup for timestamp calculation
 const char* DEFAULT_TIMESTAMP = "--:--";
@@ -82,9 +82,6 @@ void drawHeader() {
 void drawDogLabels() {
   tft.setTextDatum(TC_DATUM);
   tft.setTextColor(COL_TEXT, COL_BG);
-  tft.setSwapBytes(true);
-  tft.pushImage(20, 42, 48, 48, mollyIcon); // (x, y, w, h, iconName)
-  tft.pushImage((SCREEN_W / 2) + 20, 42, 48, 48, tobyIcon); // (x, y, w, h, iconName)
   tft.drawString(DOG_NAMES[0], SCREEN_W / 3, 56, 4);        // (text, x, y, fontSize)
   tft.drawString(DOG_NAMES[1], SCREEN_W * 3.35 / 4, 56, 4); // (text, x, y, fontSize)
 }
@@ -97,6 +94,14 @@ void drawButton(Button &btn) {
   tft.drawString(btn.label, btn.x + btn.w / 2, btn.y + btn.h / 2 - 10, 2);  // Morning or evening label
   tft.drawString(btn.time,  btn.x + btn.w / 2, btn.y + btn.h / 2 + 10, 2);  // Time fed
 }
+
+// Draws meal tracker icons
+void drawIcons() {
+  tft.setSwapBytes(true);
+  tft.pushImage(20, 42, 48, 48, mollyIcon); // (x, y, w, h, iconName)
+  tft.pushImage((SCREEN_W / 2) + 20, 42, 48, 48, tobyIcon); // (x, y, w, h, iconName)
+}
+
 // -------------------- End Drawing Functions --------------------
 
 // -------------------- Begin Time Functions --------------------
@@ -240,6 +245,9 @@ void setup() {
 
   // Config system time with NTP
   configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
+
+  // Draws icons after board is connected to WiFi and time is configured
+  drawIcons();
 }
 
 // ******************** Loop ********************
