@@ -7,6 +7,7 @@
 #include <Preferences.h>
 
 // Include dog icon header files
+#include "images/pawPadIcon.h"
 #include "images/mollyIcon.h"
 #include "images/tobyIcon.h"
 
@@ -57,8 +58,8 @@ const uint16_t COL_EVENING_BG = tft.color565(245, 195, 143);  // Button backgrou
 const uint16_t COL_EVENING_TX = TFT_MAROON;                   // Text background
 
 // Define WiFi information
-const char* SSID = "56K";
-const char* PASSWORD = "#xtr3m31y%3cur3";
+const char* SSID = "WIFI_NAME";
+const char* PASSWORD = "YOUR_PASSWORD";
 
 // Define timezone and NTP server setup for timestamp calculation
 const char* DEFAULT_TIMESTAMP = "--:--";
@@ -72,23 +73,22 @@ bool resetDoneToday = false; // Boolean for resetting time
 // Sets background color and draws title text
 void drawHeader() {
   tft.fillScreen(COL_BG);
-  tft.setTextDatum(TC_DATUM); // Center text
   tft.setTextColor(COL_TEXT, COL_BG);                     
-  tft.drawString("Dog Meal Tracker", SCREEN_W / 2, 6, 4); // (text, x, y, fontSize)
-  tft.drawLine(20, 36, SCREEN_W - 20, 36, COL_LINE); // (x0, y0, x1, y1, color)
+  tft.drawString("Dog Meal Tracker", 35, 8, 4); // (text, x, y, fontSize)
+  tft.drawLine(20, 42, SCREEN_W - 20, 42, COL_LINE); // (x0, y0, x1, y1, color)
 }
 
 // Draws dog labels
 void drawDogLabels() {
   tft.setTextDatum(TC_DATUM);
   tft.setTextColor(COL_TEXT, COL_BG);
-  tft.drawString(DOG_NAMES[0], SCREEN_W / 3, 56, 4);        // (text, x, y, fontSize)
-  tft.drawString(DOG_NAMES[1], SCREEN_W * 3.35 / 4, 56, 4); // (text, x, y, fontSize)
+  tft.drawString(DOG_NAMES[0], SCREEN_W / 3, 62, 4);        // (text, x, y, fontSize)
+  tft.drawString(DOG_NAMES[1], SCREEN_W * 3.35 / 4, 62, 4); // (text, x, y, fontSize)
 }
 
 // Draws meal buttons
 void drawButton(Button &btn) {
-  tft.fillRoundRect(btn.x, btn.y, btn.w, btn.h, 8, btn.color);              
+  tft.fillRoundRect(btn.x, btn.y, btn.w, btn.h, 8, btn.color);
   tft.setTextColor(btn.textColor, btn.color);                              
   tft.setTextDatum(MC_DATUM);                                               // Center text
   tft.drawString(btn.label, btn.x + btn.w / 2, btn.y + btn.h / 2 - 10, 2);  // Morning or evening label
@@ -98,10 +98,10 @@ void drawButton(Button &btn) {
 // Draws meal tracker icons
 void drawIcons() {
   tft.setSwapBytes(true);
-  tft.pushImage(20, 42, 48, 48, mollyIcon); // (x, y, w, h, iconName)
-  tft.pushImage((SCREEN_W / 2) + 20, 42, 48, 48, tobyIcon); // (x, y, w, h, iconName)
+  tft.pushImage(245, 1, 40, 40, pawPadIcon); // (x, y, w, h, iconName)
+  tft.pushImage(20, 48, 48, 48, mollyIcon); // (x, y, w, h, iconName)
+  tft.pushImage((SCREEN_W / 2) + 20, 50, 48, 48, tobyIcon); // (x, y, w, h, iconName)
 }
-
 // -------------------- End Drawing Functions --------------------
 
 // -------------------- Begin Time Functions --------------------
@@ -168,10 +168,10 @@ void setupButtons() {
   int colWidth  = SCREEN_W / 2; // Center of screen
   int btnHeight = 52;
   int spacing   = 12;  // 12 px spacing between buttons
-  int yStart    = 96;  // Starting y coordinate for buttons
+  int yStart    = 102; // Starting y coordinate for buttons
 
   // Dividing line between buttons
-  tft.drawLine(colWidth, 56, colWidth, yStart + (btnHeight*2) + spacing, COL_TEXT); // (x0, y0, x1, y1, color)
+  tft.drawLine(colWidth, 62, colWidth, yStart + (btnHeight*2) + spacing, COL_TEXT); // (x0, y0, x1, y1, color)
   
   // Molly buttons: {x, y, w, h, label, background color, text color, time, pressed, key}
   buttons[0] = {20, yStart, colWidth - 40, btnHeight, MEAL_NAMES[0], COL_MORNING_BG, COL_MORNING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[0]};                      
