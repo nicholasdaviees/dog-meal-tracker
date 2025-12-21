@@ -11,6 +11,9 @@
 #include "images/mollyIcon.h"
 #include "images/tobyIcon.h"
 
+// Include WiFi credentials header file
+#include "secrets.h"
+
 // Capacitive touch pins
 #define TOUCH_SDA_PIN 33
 #define TOUCH_SCL_PIN 32
@@ -56,10 +59,6 @@ const uint16_t COL_MORNING_BG = tft.color565(191, 211, 217);  // Button backgrou
 const uint16_t COL_MORNING_TX = TFT_NAVY;                     // Text background
 const uint16_t COL_EVENING_BG = tft.color565(245, 195, 143);  // Button background
 const uint16_t COL_EVENING_TX = TFT_MAROON;                   // Text background
-
-// Define WiFi information
-const char* SSID = "WIFI_NAME";
-const char* PASSWORD = "YOUR_PASSWORD";
 
 // Define timezone and NTP server setup for timestamp calculation
 const char* DEFAULT_TIMESTAMP = "--:--";
