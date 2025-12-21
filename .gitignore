@@ -4,6 +4,7 @@
 .AppleDouble
 .LSOverride
 /images/.DS_Store
+secrets.h
 
 # Icon must end with two \r
 Icon
