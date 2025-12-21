@@ -42,14 +42,15 @@ struct Button {
   uint16_t textColor;
   String time;
   bool pressed;
-  const char* key;
+  const char* keyTime;
+  const char* keyPressed;
 };
 
 // Define arrays
 Button buttons[4];
 const char* const DOG_NAMES[2]  = {"Molly", "Toby"};
 const char* const MEAL_NAMES[2] = {"Fed Morning", "Fed Evening"};
-const char* const BTN_KEYS[4]   = {"btn1", "btn2", "btn3", "btn4"};
+const char* const BTN_KEYS[8]   = {"btn1_time", "btn2_time", "btn3_time", "btn4_time", "btn1_pressed", "btn2_pressed", "btn3_pressed", "btn4_pressed"};
 
 // Define colors
 const uint16_t COL_BG         = tft.color565(255, 248, 231);  // Cream background
@@ -120,14 +121,16 @@ String getCurrentTime() {
 // Loads timestamp stored in flash into buttonTimes array. Default value is "--:--" if timestamp not set
 void loadTimeFromFlash(Button &btn) {
   prefs.begin("btnData", false);
-  btn.time = prefs.getString(btn.key, DEFAULT_TIMESTAMP); // getString(key, default value if not set)
+  btn.time = prefs.getString(btn.keyTime, DEFAULT_TIMESTAMP); // getString(key, default value if not set)
+  btn.pressed = prefs.getBool(btn.keyPressed, false);
   prefs.end();
 }
 
 // Saves button timestamp to flash
 void saveTimeToFlash(Button &btn) {
   prefs.begin("btnData", false);
-  prefs.putString(btn.key, btn.time);
+  prefs.putString(btn.keyTime, btn.time);
+  prefs.putBool(btn.keyPressed, btn.pressed);
   prefs.end();
 }
 
@@ -172,13 +175,13 @@ void setupButtons() {
   // Dividing line between buttons
   tft.drawLine(colWidth, 62, colWidth, yStart + (btnHeight*2) + spacing, COL_TEXT); // (x0, y0, x1, y1, color)
   
-  // Molly buttons: {x, y, w, h, label, background color, text color, time, pressed, key}
-  buttons[0] = {20, yStart, colWidth - 40, btnHeight, MEAL_NAMES[0], COL_MORNING_BG, COL_MORNING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[0]};                      
-  buttons[1] = {20, yStart + btnHeight + spacing, colWidth - 40, btnHeight, MEAL_NAMES[1], COL_EVENING_BG, COL_EVENING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[1]};                       
+  // Molly buttons: {x, y, w, h, label, background color, text color, time, pressed, keyTime, keyPressed}
+  buttons[0] = {20, yStart, colWidth - 40, btnHeight, MEAL_NAMES[0], COL_MORNING_BG, COL_MORNING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[0], BTN_KEYS[4]};                      
+  buttons[1] = {20, yStart + btnHeight + spacing, colWidth - 40, btnHeight, MEAL_NAMES[1], COL_EVENING_BG, COL_EVENING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[1], BTN_KEYS[5]};                       
 
-  // Toby buttons: {x, y, w, h, label, background color, text color, time, pressed, key}
-  buttons[2] = {colWidth + 20, yStart, colWidth - 40, btnHeight, MEAL_NAMES[0], COL_MORNING_BG, COL_MORNING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[2]};                       
-  buttons[3] = {colWidth + 20, yStart + btnHeight + spacing, colWidth - 40, btnHeight, MEAL_NAMES[1], COL_EVENING_BG, COL_EVENING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[3]};                      
+  // Toby buttons: {x, y, w, h, label, background color, text color, time, pressed, keyTime, keyPressed}
+  buttons[2] = {colWidth + 20, yStart, colWidth - 40, btnHeight, MEAL_NAMES[0], COL_MORNING_BG, COL_MORNING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[2], BTN_KEYS[6]};                       
+  buttons[3] = {colWidth + 20, yStart + btnHeight + spacing, colWidth - 40, btnHeight, MEAL_NAMES[1], COL_EVENING_BG, COL_EVENING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[3], BTN_KEYS[7]};                      
 
   // Populates buttons with timestamps stored in flash. Otherwise leaves values as default.
   for (auto &b : buttons) loadTimeFromFlash(b);
@@ -186,13 +189,13 @@ void setupButtons() {
 // -------------------- End Button Setup Function --------------------
 
 // -------------------- Begin Button Calibration Functions --------------------
-// Function to ensure touch press was inside a button
-bool inButton(int x, int y, const Button &button) {
-  // Left = b.x
-  // Right = b.x + b.w
-  // Top = b.y
-  // Bottom = b.y + b.h
-  return (x >= button.x && x <= button.x + button.w && y >= button.y && y <= button.y + button.h);
+// Function to ensure touch press was inside button
+bool inButton(int x, int y, const Button &btn) {
+  // Left = btn.x
+  // Right = btn.x + btn.w
+  // Top = btn.y
+  // Bottom = btn.y + btn.h
+  return (x >= btn.x && x <= btn.x + btn.w && y >= btn.y && y <= btn.y + btn.h);
 }
 
 // Function to calibrate touch input
@@ -265,7 +268,10 @@ void loop() {
 
         for (int numBtn = 0; numBtn < 4; numBtn++) {
           if (inButton(x, y, buttons[numBtn])) {
-            updateTime(buttons[numBtn]); // Set time when pressed
+            // Check to prevent time from being updated again unless button is reset
+            if(!buttons[numBtn].pressed) {
+              updateTime(buttons[numBtn]); // Set time when pressed
+            }
             lastTap = millis();
             break; // Exits loop to prevent from checking other buttons unnecessarily  
           }
