@@ -10,6 +10,10 @@
 #include "images/pawPadIcon.h"
 #include "images/mollyIcon.h"
 #include "images/tobyIcon.h"
+#include "images/checkmarkMorningIcon.h"
+#include "images/checkmarkEveningIcon.h"
+#include "images/xMorningIcon.h"
+#include "images/xEveningIcon.h"
 
 // Include WiFi credentials header file
 #include "secrets.h"
@@ -66,7 +70,7 @@ const char* DEFAULT_TIMESTAMP = "--:--";
 const char* NTP_SERVER = "pool.ntp.org";
 const long GMT_OFFSET_SEC = -8 * 3600; // PST
 const int DAYLIGHT_OFFSET_SEC = 3600; // +1 hour for PDT
-bool resetDoneToday = false; // Boolean for resetting time
+bool resetDoneToday = false;
 
 // ******************** Begin Helper Functions ********************
 // -------------------- Begin Drawing Functions --------------------
@@ -88,18 +92,52 @@ void drawDogLabels() {
 
 // Draws meal buttons
 void drawButton(Button &btn) {
+  const int iconW = 20;
+  const int iconH = 20;
+  const int spacing = 2;
+
+  int textW = tft.textWidth(btn.time, 2);
+  int groupW = iconW + spacing + textW;
+
+  int centerX = btn.x + btn.w / 2;
+  int centerY = btn.y + btn.h / 2 + 10;
+
+  int iconX = centerX - groupW / 2;
+  int textX = iconX + iconW + spacing;
+
   tft.fillRoundRect(btn.x, btn.y, btn.w, btn.h, 8, btn.color);
   tft.setTextColor(btn.textColor, btn.color);                              
-  tft.setTextDatum(MC_DATUM);                                               // Center text
-  tft.drawString(btn.label, btn.x + btn.w / 2, btn.y + btn.h / 2 - 10, 2);  // Morning or evening label
-  tft.drawString(btn.time,  btn.x + btn.w / 2, btn.y + btn.h / 2 + 10, 2);  // Time fed
+  tft.setTextDatum(MC_DATUM);                                               
+  tft.drawString(btn.label, btn.x + btn.w / 2, btn.y + btn.h / 2 - 10, 2); // Morning or evening label
+  tft.drawString(btn.time, textX + textW / 2, centerY, 2); // Time fed
+  tft.setSwapBytes(true);
+
+  // Place icons with morning button background color
+  if(btn.label == MEAL_NAMES[0]) {
+    if(btn.pressed){
+      tft.pushImage(iconX, centerY - iconH / 2, iconW, iconH, checkmarkMorningIcon);
+    }
+    else{
+      tft.pushImage(iconX, centerY - iconH / 2, iconW, iconH, xMorningIcon);
+    }
+  }
+
+  // Place icons with evening button background color
+  else{
+    if(btn.pressed){
+      tft.pushImage(iconX, centerY - iconH / 2, iconW, iconH, checkmarkEveningIcon);
+    }
+    else{
+      tft.pushImage(iconX, centerY - iconH / 2, iconW, iconH, xEveningIcon);
+    }
+  }
 }
 
 // Draws meal tracker icons
 void drawIcons() {
   tft.setSwapBytes(true);
   tft.pushImage(245, 1, 40, 40, pawPadIcon); // (x, y, w, h, iconName)
-  tft.pushImage(20, 48, 48, 48, mollyIcon); // (x, y, w, h, iconName)
+  tft.pushImage(20, 48, 48, 48, mollyIcon);  // (x, y, w, h, iconName)
   tft.pushImage((SCREEN_W / 2) + 20, 50, 48, 48, tobyIcon); // (x, y, w, h, iconName)
 }
 // -------------------- End Drawing Functions --------------------
@@ -144,11 +182,9 @@ void updateTime(Button &btn) {
 
 // Resets button time to default value
 void resetTime(Button &btn) {
-  if (btn.time != DEFAULT_TIMESTAMP) {
-    btn.time = DEFAULT_TIMESTAMP;
-    saveTimeToFlash(btn);
-  }
+  btn.time = DEFAULT_TIMESTAMP;
   btn.pressed = false;
+  saveTimeToFlash(btn);
   drawButton(btn);
 }
 
@@ -167,10 +203,10 @@ bool isMidnight() {
 // -------------------- Begin Button Setup Function --------------------
 // Populate button objects with data
 void setupButtons() {
-  int colWidth  = SCREEN_W / 2; // Center of screen
+  int colWidth  = SCREEN_W / 2;
   int btnHeight = 52;
-  int spacing   = 12;  // 12 px spacing between buttons
-  int yStart    = 102; // Starting y coordinate for buttons
+  int spacing   = 12;
+  int yStart    = 102;
 
   // Dividing line between buttons
   tft.drawLine(colWidth, 62, colWidth, yStart + (btnHeight*2) + spacing, COL_TEXT); // (x0, y0, x1, y1, color)
