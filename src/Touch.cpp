@@ -1,9 +1,8 @@
-#include "Touch.h"
-
-#include "Globals.h"
-#include "Config.h"
-#include "UI.h"
-#include "TimeUtils.h"
+#include "include/Touch.h"
+#include "include/Globals.h"
+#include "include/Config.h"
+#include "include/UI.h"
+#include "include/TimeUtils.h"
 
 // Ensures touch press was inside button
 bool inButton(int x, int y, const Button &btn) {

@@ -6,8 +6,8 @@
 #include <WiFi.h>
 #include <Preferences.h>
 
-#include "Globals.h"
-#include "Config.h"
+#include "include/Globals.h"
+#include "include/Config.h"
 
 // Initialize display
 TFT_eSPI tft = TFT_eSPI();

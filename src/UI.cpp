@@ -1,4 +1,4 @@
-#include "UI.h"
+#include "include/UI.h"
 
 #include <TFT_eSPI.h>
 #include <SPI.h>
@@ -8,19 +8,19 @@
 #include <WiFi.h>
 #include <Preferences.h>
 
-#include "Globals.h"
-#include "Config.h"
+#include "include/Globals.h"
+#include "include/Config.h"
 
 // Include icon header files
-#include "images/pawPadIcon.h"
-#include "images/mollyIcon.h"
-#include "images/tobyIcon.h"
-#include "images/checkmarkMorningIcon.h"
-#include "images/checkmarkEveningIcon.h"
-#include "images/xMorningIcon.h"
-#include "images/xEveningIcon.h"
-#include "images/checkmarkPopupIcon.h"
-#include "images/xPopupIcon.h"
+#include "../images/pawPadIcon.h"
+#include "../images/mollyIcon.h"
+#include "../images/tobyIcon.h"
+#include "../images/checkmarkMorningIcon.h"
+#include "../images/checkmarkEveningIcon.h"
+#include "../images/xMorningIcon.h"
+#include "../images/xEveningIcon.h"
+#include "../images/checkmarkPopupIcon.h"
+#include "../images/xPopupIcon.h"
 
 // Sets background color and draws title text
 void drawHeader() {

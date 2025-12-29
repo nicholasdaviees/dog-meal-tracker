@@ -1,8 +1,8 @@
-#include "Storage.h"
+#include "include/Storage.h"
 
 #include <Preferences.h>
 
-#include "Globals.h"
+#include "include/Globals.h"
 
 // Loads timestamp stored in flash into buttonTimes array
 // Default value is "--:--" if timestamp not set
