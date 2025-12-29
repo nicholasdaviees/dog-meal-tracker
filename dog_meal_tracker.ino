@@ -7,13 +7,13 @@
 #include <Preferences.h>
 
 // Include program header files
-#include "Config.h"
-#include "Types.h"
-#include "Globals.h"
-#include "UI.h"
-#include "Storage.h"
-#include "TimeUtils.h"
-#include "Touch.h"
+#include "include/Config.h"
+#include "include/Types.h"
+#include "include/Globals.h"
+#include "include/UI.h"
+#include "include/Storage.h"
+#include "include/TimeUtils.h"
+#include "include/Touch.h"
 
 // Include WiFi credentials header file
 #include "secrets.h"

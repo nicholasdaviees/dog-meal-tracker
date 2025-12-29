@@ -1,10 +1,10 @@
-#include "TimeUtils.h"
+#include "include/TimeUtils.h"
 
 #include <time.h>
 
-#include "Globals.h"
-#include "UI.h"
-#include "Storage.h"
+#include "include/Globals.h"
+#include "include/UI.h"
+#include "include/Storage.h"
 
 // Calculates current time
 String getCurrentTime() {
