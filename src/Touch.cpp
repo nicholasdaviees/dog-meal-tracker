@@ -3,6 +3,7 @@
 #include "include/Config.h"
 #include "include/UI.h"
 #include "include/TimeUtils.h"
+#include "include/Storage.h"
 
 // Ensures touch press was inside button
 bool inButton(int x, int y, const Button &btn) {
@@ -26,6 +27,21 @@ void mapCoordinates(int &x, int &y) {
   // Update x and y with new values
   x = new_x; 
   y = new_y;
+}
+
+void handleUndoTouch() {
+  Button prevState;
+  if(pop(prevState)){ // Stack not empty
+
+    for (auto &b : buttons) {
+      if(b.x == prevState.x && b.y == prevState.y) {
+        b = prevState;
+        drawButton(b); // Restore to previous button state
+        saveTimeToFlash(b);
+        break;
+      }
+    }
+  }
 }
 
 void handlePopupTouch(int x, int y) {

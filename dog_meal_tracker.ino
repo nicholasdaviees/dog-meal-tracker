@@ -38,10 +38,16 @@ void setupButtons() {
 
   // Populates buttons with timestamps stored in flash. Otherwise leaves values as default.
   for (auto &b : buttons) loadTimeFromFlash(b);
+
+  // Update paw pad (undo) icon with correct positions 
+  ActionBtns[2] = {245, 1, 40, 40};
 }
 
 void setup() {
   Serial.begin(115200);
+
+  // Open NVS namespace
+  prefs.begin("btnData", false);
 
   // Initialize display
   tft.init();
@@ -97,7 +103,11 @@ void loop() {
       x = constrain(x, 0, SCREEN_W - 1);
       y = constrain(y, 0, SCREEN_H - 1);
 
-      if(confirmationShown) {
+      if(inButton(x, y, ActionBtns[2])){ // Touch on undo button (paw pad)
+        handleUndoTouch();
+      }
+
+      else if(confirmationShown) {
         handlePopupTouch(x, y);
       }
       
