@@ -21,6 +21,7 @@ String getCurrentTime() {
 
 // Updates button time to current time
 void updateTime(Button &btn) {
+  push(btn); // Push previous state to stack
   btn.time = getCurrentTime();
   btn.pressed = true;
   saveTimeToFlash(btn);
@@ -29,6 +30,7 @@ void updateTime(Button &btn) {
 
 // Resets button time to default value
 void resetTime(Button &btn) {
+  push(btn); // Push previous state to stack
   btn.time = DEFAULT_TIMESTAMP;
   btn.pressed = false;
   saveTimeToFlash(btn);

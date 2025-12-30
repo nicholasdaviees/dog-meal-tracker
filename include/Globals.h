@@ -6,24 +6,24 @@
 
 #include "Types.h"
 
-// Initialize display
+// Board display
 extern TFT_eSPI tft;
 
-// Initialize touch
+// Display touch
 extern BBCapTouch capTouch;
 extern TOUCHINFO touchInfo;
 
-// Initialize preferences object for non-volatile memory
+// Preferences object for non-volatile memory
 extern Preferences prefs;
 
-// Define arrays
+// Program arrays
 extern Button buttons[4];
-extern ActionBtn ActionBtns[2];
+extern ActionBtn ActionBtns[3];
 extern const char* const DOG_NAMES[2];
 extern const char* const MEAL_NAMES[2];
 extern const char* const BTN_KEYS[8];
 
-// Define colors
+// Program colors
 extern const uint16_t COL_BG;
 extern const uint16_t COL_TEXT;
 extern const uint16_t COL_LINE;
@@ -33,14 +33,21 @@ extern const uint16_t COL_EVENING_BG;
 extern const uint16_t COL_EVENING_TX;
 extern const uint16_t POPUP_BG;
 
-// Define timezone and NTP server setup for timestamp calculation
+// Timezone and NTP server setup for timestamp calculation
 extern const char* DEFAULT_TIMESTAMP;
 extern const char* NTP_SERVER;
 extern const long GMT_OFFSET_SEC; // PST
 extern const int DAYLIGHT_OFFSET_SEC; // +1 hour for PDT
 extern bool resetDoneToday;
 
-// Define loop function variables
+// Program loop function variables
 extern bool wasTouched;
 extern bool confirmationShown;
 extern int buttonToReset;
+
+// Stack
+extern UndoStack stack;
+
+// Stack functions
+void push(const Button &btn);
+bool pop(Button &btn);

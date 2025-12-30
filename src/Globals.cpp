@@ -21,10 +21,10 @@ Preferences prefs;
 
 // Define arrays
 Button buttons[4];
-ActionBtn ActionBtns[2];
-const char* const DOG_NAMES[2]  = {"Molly", "Toby"};
+ActionBtn ActionBtns[3];
+const char* const DOG_NAMES[2] = {"Molly", "Toby"};
 const char* const MEAL_NAMES[2] = {"Fed Morning", "Fed Evening"};
-const char* const BTN_KEYS[8]   = {"btn1_time", "btn2_time", "btn3_time", "btn4_time", "btn1_pressed", "btn2_pressed", "btn3_pressed", "btn4_pressed"};
+const char* const BTN_KEYS[8] = {"btn1_time", "btn2_time", "btn3_time", "btn4_time", "btn1_pressed", "btn2_pressed", "btn3_pressed", "btn4_pressed"};
 
 // Define colors
 const uint16_t COL_BG         = tft.color565(255, 248, 231);  // Cream background
@@ -47,3 +47,30 @@ bool resetDoneToday = false;
 bool wasTouched = false;
 bool confirmationShown = false;
 int buttonToReset = -1;
+
+// Stack
+UndoStack stack;
+
+// Define stack functions
+void push(const Button &btn){
+	if (stack.size < STACK_SIZE) {
+	int index = (stack.head + stack.size) % STACK_SIZE;
+    stack.buf[index] = btn;
+    stack.size++;
+  } 
+
+  // Stack full. Overwrites the oldest and wraps-around by advancing head
+  else {
+    stack.buf[stack.head] = btn;
+    stack.head = (stack.head + 1) % STACK_SIZE;
+  }
+}
+
+bool pop(Button &btn){
+	if (stack.size == 0) return false; // Stack empty
+
+  	int topIndex = (stack.head + stack.size - 1) % STACK_SIZE;
+  	btn = stack.buf[topIndex];
+  	stack.size--;
+  	return true;
+}

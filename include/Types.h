@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <stdint.h>
 
+constexpr int STACK_SIZE = 10;
+
 // Normal buttons
 struct Button {
   int x, y, w, h;
@@ -15,8 +17,13 @@ struct Button {
 };
 
 // Action buttons
-// ******* LIKELY TO CHANGE *******
 struct ActionBtn {
   int x, y, w, h;
 };
-// ******* LIKELY TO CHANGE *******
+
+// Stack for undo button
+struct UndoStack {
+  Button buf[STACK_SIZE];
+  int head = 0; // Index of oldest element
+  int size = 0;
+};
