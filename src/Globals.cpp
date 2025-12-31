@@ -25,6 +25,7 @@ ActionBtn ActionBtns[3];
 const char* const DOG_NAMES[2] = {"Molly", "Toby"};
 const char* const MEAL_NAMES[2] = {"Fed Morning", "Fed Evening"};
 const char* const BTN_KEYS[8] = {"btn1_time", "btn2_time", "btn3_time", "btn4_time", "btn1_pressed", "btn2_pressed", "btn3_pressed", "btn4_pressed"};
+MealSwitch *homeKitSwitches[4] = {nullptr, nullptr, nullptr, nullptr};
 
 // Define colors
 const uint16_t COL_BG         = tft.color565(255, 248, 231);  // Cream background
@@ -73,4 +74,12 @@ bool pop(Button &btn){
   	btn = stack.buf[topIndex];
   	stack.size--;
   	return true;
+}
+
+// Helper function for Homekit integration
+int getButtonIndex(const Button &btn) {
+  for (int index = 0; index < 4; index++) {
+    if (&buttons[index] == &btn) return index; // Same object in memory
+  }
+  return -1;
 }

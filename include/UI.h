@@ -3,6 +3,6 @@
 
 void drawHeader();
 void drawDogLabels();
-void drawButton(Button &btn);
+void drawButton(const Button &btn);
 void drawIcons();
 void drawPopup();

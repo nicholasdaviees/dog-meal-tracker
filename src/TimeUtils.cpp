@@ -26,6 +26,11 @@ void updateTime(Button &btn) {
   btn.pressed = true;
   saveTimeToFlash(btn);
   drawButton(btn);
+
+  int index = getButtonIndex(btn); // Get button index to update correct Homekit switch
+  if (index >= 0 && homeKitSwitches[index]) {
+    homeKitSwitches[index]->syncHomekitFromButton();
+  }
 }
 
 // Resets button time to default value
@@ -35,6 +40,11 @@ void resetTime(Button &btn) {
   btn.pressed = false;
   saveTimeToFlash(btn);
   drawButton(btn);
+  
+  int index = getButtonIndex(btn); // Get button index to update correct Homekit switch
+  if (index >= 0 && homeKitSwitches[index]) {
+    homeKitSwitches[index]->syncHomekitFromButton();
+  }
 }
 
 // Helper function for resetting time at midnight
