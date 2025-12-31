@@ -25,7 +25,7 @@ This meal tracker system was designed with the [**ESP32 JC2432W328C 2.8 TFT Capa
 - When adding the accessory to Apple HomeKit, choose `Dog Meal Tracker` as the bridge and add the four accessories associated with the bridge as switches.
 
 ## Creating Icon Header Files for Displaying Images on the Display
-It is necessary to create icon header files because the ESP32 cannot directly display PNG or SVG images. Any image of that type must first be converted into a bitmap array (raw RGB565 pixel data) and stored in a header file so it can be rendered on the TFT display. The PNG is converted to SVG so the image can be resized without quality loss.
+It is necessary to create icon header files because the ESP32 cannot directly display PNG or SVG images. Any image of that type must first be converted into a bitmap array (raw RGB565 pixel data) and stored in a header file so it can be rendered on the TFT display. The PNG image is converted to an SVG, then back to a PNG, so the image can be resized without quality loss.
 - Get PNG image.
 - Convert to SVG.
 - I used Figma for the following:
