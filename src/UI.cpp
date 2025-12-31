@@ -29,6 +29,7 @@ void drawHeader() {
   tft.setTextColor(COL_TEXT, COL_BG);                     
   tft.drawString("Dog Meal Tracker", 35, 8, 4); // (text, x, y, fontSize)
   tft.drawLine(20, 42, SCREEN_W - 20, 42, COL_LINE); // (x0, y0, x1, y1, color)
+  tft.drawLine(SCREEN_W / 2, 62, SCREEN_W / 2, 218, COL_TEXT); // Dividing center line between buttons
 }
 
 void drawDogLabels() {

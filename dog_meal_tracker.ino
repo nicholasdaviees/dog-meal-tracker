@@ -26,9 +26,6 @@ void setupButtons() {
   int btnHeight = 52;
   int spacing   = 12;
   int yStart    = 102;
-
-  // Dividing line between buttons
-  tft.drawLine(colWidth, 62, colWidth, yStart + (btnHeight*2) + spacing, COL_TEXT); // (x0, y0, x1, y1, color)
   
   // Molly buttons: {x, y, w, h, label, background color, text color, time, pressed, keyTime, keyPressed}
   buttons[0] = {20, yStart, colWidth - 40, btnHeight, MEAL_NAMES[0], COL_MORNING_BG, COL_MORNING_TX, DEFAULT_TIMESTAMP, false, BTN_KEYS[0], BTN_KEYS[4]};                      
