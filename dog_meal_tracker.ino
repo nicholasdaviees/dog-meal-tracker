@@ -74,26 +74,26 @@ void setup() {
   new SpanAccessory();
     new Service::AccessoryInformation();
       new Characteristic::Identify();
-      new Characteristic::Name("Molly Morning");
-    homeKitSwitches[0] = new MealSwitch(&buttons[0], "Molly Morning");
+      new Characteristic::Name(HK_SWITCH_NAMES[0]);
+    homeKitSwitches[0] = new MealSwitch(&buttons[0], HK_SWITCH_NAMES[0]);
 
   new SpanAccessory();
     new Service::AccessoryInformation();
       new Characteristic::Identify();
-      new Characteristic::Name("Molly Evening");
-    homeKitSwitches[1] = new MealSwitch(&buttons[1], "Molly Evening");
+      new Characteristic::Name(HK_SWITCH_NAMES[1]);
+    homeKitSwitches[1] = new MealSwitch(&buttons[1], HK_SWITCH_NAMES[1]);
 
   new SpanAccessory();
     new Service::AccessoryInformation();
       new Characteristic::Identify();
-      new Characteristic::Name("Toby Morning");
-    homeKitSwitches[2] = new MealSwitch(&buttons[2], "Toby Morning");
+      new Characteristic::Name(HK_SWITCH_NAMES[2]);
+    homeKitSwitches[2] = new MealSwitch(&buttons[2], HK_SWITCH_NAMES[2]);
 
   new SpanAccessory();
     new Service::AccessoryInformation();
       new Characteristic::Identify();
-      new Characteristic::Name("Toby Evening");
-    homeKitSwitches[3] = new MealSwitch(&buttons[3], "Toby Evening");
+      new Characteristic::Name(HK_SWITCH_NAMES[3]);
+    homeKitSwitches[3] = new MealSwitch(&buttons[3], HK_SWITCH_NAMES[3]);
 
   // Starts I^2C bus for communication with capacitive touch controller
   // Set slower clock to avoid timeout

@@ -23,6 +23,7 @@ extern ActionBtn ActionBtns[3];
 extern const char* const DOG_NAMES[2];
 extern const char* const MEAL_NAMES[2];
 extern const char* const BTN_KEYS[8];
+extern const char* const HK_SWITCH_NAMES[4];
 extern MealSwitch *homeKitSwitches[4];
 
 // Program colors

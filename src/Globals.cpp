@@ -25,6 +25,7 @@ ActionBtn ActionBtns[3];
 const char* const DOG_NAMES[2] = {"Molly", "Toby"};
 const char* const MEAL_NAMES[2] = {"Fed Morning", "Fed Evening"};
 const char* const BTN_KEYS[8] = {"btn1_time", "btn2_time", "btn3_time", "btn4_time", "btn1_pressed", "btn2_pressed", "btn3_pressed", "btn4_pressed"};
+extern const char* const HK_SWITCH_NAMES[4] = {"Molly Morning", "Molly Evening", "Toby Morning", "Toby Evening"};
 MealSwitch *homeKitSwitches[4] = {nullptr, nullptr, nullptr, nullptr};
 
 // Define colors
