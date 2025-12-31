@@ -1,7 +1,7 @@
 # ESP32 Dog Meal Tracker
 This project is an ESP32-based dog meal tracker system that allows the user to monitor when their dog has been fed. The system contains integration with Apple HomeKit, which allows the user to remotely control and view the dog meal tracker with their iOS device.
 
-This meal tracker system was designed for the [**ESP32 JC2432W328C 2.8 TFT Capacitive Touch Dev Board**](https://www.amazon.com/DIYmalls-Touchscreen-ESP-WROOM-32-Development-JC2432W328C/dp/B0D5H84RDB) in mind; however, implementation with similar boards can be accomplished, although minor changes to the pin mapping, display rotation, etc., may be necessary.
+This meal tracker system was designed with the [**ESP32 JC2432W328C 2.8 TFT Capacitive Touch Dev Board**](https://www.amazon.com/DIYmalls-Touchscreen-ESP-WROOM-32-Development-JC2432W328C/dp/B0D5H84RDB) in mind; however, implementation with similar boards can be accomplished, although minor changes to the pin mapping, display rotation, etc., may be necessary.
 
 ## Installation
 - Clone the project repository or download the source code.
@@ -9,7 +9,7 @@ This meal tracker system was designed for the [**ESP32 JC2432W328C 2.8 TFT Capac
 - Rename `secrets_example.h` to `secrets.h`
 - Change the WiFi credentials in the `secrets.h` file.
 - Change `DOG_NAMES` and `HK_SWITCH_NAMES` dog names in `Globals.cpp`
-- In `dog_meal_tracker.ino` and `UI.cpp`, change icon header file names to reflect the icon header files for your dog. *(View below on how to create icon header files)*
+- In `UI.cpp`, change icon header file names and icon names in the `drawIcons()` function to reflect the icon header files for your dog. *(View below on how to create icon header files)*
 - Install the required libraries (HomeSpan, NTPClient, TimeLib, and bb_captouch).
 - Connect the ESP32 board to the computer.
 - Select the board from the Tools menu.
