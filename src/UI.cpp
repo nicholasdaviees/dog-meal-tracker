@@ -39,7 +39,7 @@ void drawDogLabels() {
 }
 
 // Draws meal buttons
-void drawButton(Button &btn) {
+void drawButton(const Button &btn) {
   const int iconW = 20;
   const int iconH = 20;
   const int spacing = 2;

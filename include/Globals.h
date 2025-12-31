@@ -5,6 +5,7 @@
 #include <Preferences.h>
 
 #include "Types.h"
+#include "Homekit.h"
 
 // Board display
 extern TFT_eSPI tft;
@@ -22,6 +23,7 @@ extern ActionBtn ActionBtns[3];
 extern const char* const DOG_NAMES[2];
 extern const char* const MEAL_NAMES[2];
 extern const char* const BTN_KEYS[8];
+extern MealSwitch *homeKitSwitches[4];
 
 // Program colors
 extern const uint16_t COL_BG;
@@ -51,3 +53,6 @@ extern UndoStack stack;
 // Stack functions
 void push(const Button &btn);
 bool pop(Button &btn);
+
+// Helper function for Homekit integration
+int getButtonIndex(const Button &btn);

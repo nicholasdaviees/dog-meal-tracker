@@ -33,11 +33,17 @@ void handleUndoTouch() {
   Button prevState;
   if(pop(prevState)){ // Stack not empty
 
-    for (auto &b : buttons) {
-      if(b.x == prevState.x && b.y == prevState.y) {
-        b = prevState;
-        drawButton(b); // Restore to previous button state
-        saveTimeToFlash(b);
+    for (auto &btn : buttons) {
+      if(btn.x == prevState.x && btn.y == prevState.y) {
+        btn = prevState;
+        drawButton(btn); // Restore to previous button state
+        saveTimeToFlash(btn);
+        
+        int index = getButtonIndex(btn); // Get button index to update correct Homekit switch
+        if (index >= 0 && homeKitSwitches[index]) {
+          homeKitSwitches[index]->syncHomekitFromButton();
+        }
+
         break;
       }
     }

@@ -11,7 +11,7 @@ void loadTimeFromFlash(Button &btn) {
   btn.pressed = prefs.getBool(btn.keyPressed, false);
 }
 
-void saveTimeToFlash(Button &btn) {
+void saveTimeToFlash(const Button &btn) {
   prefs.putString(btn.keyTime, btn.time);
   prefs.putBool(btn.keyPressed, btn.pressed);
 }

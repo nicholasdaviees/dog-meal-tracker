@@ -5,6 +5,7 @@
 #include <bb_captouch.h>
 #include <WiFi.h>
 #include <Preferences.h>
+#include <HomeSpan.h>
 
 // Include program header files
 #include "include/Config.h"
@@ -14,6 +15,7 @@
 #include "include/Storage.h"
 #include "include/TimeUtils.h"
 #include "include/Touch.h"
+#include "include/Homekit.h"
 
 // Include WiFi credentials header file
 #include "secrets.h"
@@ -59,6 +61,40 @@ void setup() {
   setupButtons();
   for (auto &b : buttons) drawButton(b);
 
+  // Start homespan as bridge device
+  homeSpan.begin(Category::Bridges, "Dog Meal Tracker");
+
+  // Create bridge accessory
+  new SpanAccessory();
+    new Service::AccessoryInformation();
+      new Characteristic::Identify();
+      new Characteristic::Name("Dog Meal Tracker Bridge");
+
+  // Create rest of accessories
+  new SpanAccessory();
+    new Service::AccessoryInformation();
+      new Characteristic::Identify();
+      new Characteristic::Name("Molly Morning");
+    homeKitSwitches[0] = new MealSwitch(&buttons[0], "Molly Morning");
+
+  new SpanAccessory();
+    new Service::AccessoryInformation();
+      new Characteristic::Identify();
+      new Characteristic::Name("Molly Evening");
+    homeKitSwitches[1] = new MealSwitch(&buttons[1], "Molly Evening");
+
+  new SpanAccessory();
+    new Service::AccessoryInformation();
+      new Characteristic::Identify();
+      new Characteristic::Name("Toby Morning");
+    homeKitSwitches[2] = new MealSwitch(&buttons[2], "Toby Morning");
+
+  new SpanAccessory();
+    new Service::AccessoryInformation();
+      new Characteristic::Identify();
+      new Characteristic::Name("Toby Evening");
+    homeKitSwitches[3] = new MealSwitch(&buttons[3], "Toby Evening");
+
   // Starts I^2C bus for communication with capacitive touch controller
   // Set slower clock to avoid timeout
   Wire.begin(TOUCH_SDA_PIN, TOUCH_SCL_PIN, 100000); // (serial data, serial clock, bus speed)
@@ -87,6 +123,10 @@ void setup() {
 }
 
 void loop() {
+
+  // Update homekit
+  homeSpan.poll();
+  
   if (capTouch.getSamples(&touchInfo)) { // Detects touch input
 
     // True if at least one finger touching screen
