@@ -6,13 +6,13 @@ This meal tracker system was designed with the [**ESP32 JC2432W328C 2.8 TFT Capa
 ## User Interface Overview
 - *See video demo below.*
 - The user interface contains two buttons for each dog: `Fed Morning` and `Fed Evening`
-- When a buttons is pressed, the current time is displayed on that button, signifiying that the dog got fed for that particular meal.
-- Reset the time on a pressed button by touching it again and confirming the action by clicking the checkmark in the popup that appears.
+- When a button is pressed, the current time is displayed on that button, signifying that the dog got fed for that particular meal.
+- Reset the time on a pressed button by touching it again and confirming the action by clicking the checkmark in the pop-up that appears.
 - Undo an action by pressing the paw pad icon in the top right corner.
 - **Additional Information:**
     - The time displayed on all buttons will automatically reset daily at midnight.
     - The meal tracker icons will not appear on the display until the board has successfully connected to WiFi.
-    - The timestamp shown on a button remains persistant even if the board is powered off and on again.
+    - The timestamp shown on a button remains persistent even if the board is powered off and on again.
 
 ## Installation
 - Clone the project repository or download the source code.
@@ -51,7 +51,7 @@ It is necessary to create icon header files because the ESP32 cannot directly di
 - In the newly renamed header file, change the 3rd line to reflect your image (for example, of size 32x32 px): `const uint16_t oldNameIcon[48 * 48]` -> `const uint16_t newNameIcon[32 * 32]`
 - Open up [LCD Image Converter](https://lcd-image-converter.riuson.com/en/about/) and select `New Image`.
 - In the project, select `Options → Conversion`
-- Under the `Image` tab, make sure the following settings are set
+- Under the `Image` tab, make sure the following settings are set:
     - **Format:** Color R5G6B5
     - **Block size:** 16-bit
     - **Byte order:** Little-endian
