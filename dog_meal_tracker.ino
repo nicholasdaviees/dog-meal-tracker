@@ -58,6 +58,22 @@ void setup() {
   setupButtons();
   for (auto &b : buttons) drawButton(b);
 
+  // Connect to WiFi
+  WiFi.mode(WIFI_STA);
+  WiFi.setSleep(false);
+  WiFi.setAutoReconnect(true);
+  WiFi.setHostname("dog-meal-tracker");
+  WiFi.begin(SSID, PASSWORD);
+  Serial.println("\nConnecting");
+
+  while(WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(500);
+  }
+
+  Serial.print("\nConnected: ");
+  Serial.println(WiFi.localIP());
+
   // Start homespan as bridge device
   homeSpan.begin(Category::Bridges, "Dog Meal Tracker");
 
@@ -99,18 +115,6 @@ void setup() {
   // Initialize capacitive touch
   capTouch.init(TOUCH_SDA_PIN, TOUCH_SCL_PIN, TOUCH_RST_PIN, TOUCH_INT_PIN); // (serial data, serial clock, reset pin, interrupt pin)
   capTouch.setOrientation(0, SCREEN_W, SCREEN_H);
-
-  // Connect to WiFi
-  WiFi.begin(SSID, PASSWORD);
-  Serial.println("\nConnecting");
-
-  while(WiFi.status() != WL_CONNECTED){
-    Serial.print(".");
-    delay(500);
-  }
-
-  Serial.print("\nConnected: ");
-  Serial.println(WiFi.localIP());
 
   // Config system time with NTP
   configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
